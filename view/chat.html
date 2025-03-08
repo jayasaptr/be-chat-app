@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket Chat</title>
+  </head>
+  <body>
+    <h2>WebSocket Chat</h2>
+    <input type="text" id="messageInput" placeholder="Type a message..." />
+    <button onclick="sendMessage()">Send</button>
+    <ul id="messages"></ul>
+
+    <script>
+      const token = "your_valid_jwt_token_here"; // Pastikan token benar
+      const socket = new WebSocket(`ws://localhost:8080/ws?token=${token}`);
+
+      socket.onopen = () => {
+        console.log("✅ WebSocket Connected");
+        socket.send(
+          JSON.stringify({
+            receiver_id: "user2",
+            content: "Hello from browser!",
+          })
+        );
+      };
+
+      socket.onmessage = (event) => {
+        console.log("📩 Message received:", event.data);
+      };
+
+      socket.onerror = (error) => {
+        console.error("❌ WebSocket Error:", error);
+      };
+
+      socket.onclose = (event) => {
+        console.warn("❌ WebSocket Closed:", event);
+      };
+
+      function sendMessage() {
+        const input = document.getElementById("messageInput");
+        const message = input.value;
+
+        if (socket.readyState === WebSocket.OPEN) {
+          socket.send(
+            JSON.stringify({
+              sender_id: "user1",
+              receiver_id: "user2",
+              content: message,
+            })
+          );
+          input.value = "";
+        } else {
+          console.error(
+            "WebSocket is not open. Current state:",
+            socket.readyState
+          );
+        }
+      }
+    </script>
+  </body>
+</html>

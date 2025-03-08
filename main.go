@@ -2,6 +2,7 @@ package main
 
 import (
 	"chat-app/config"
+	"chat-app/handlers"
 	"chat-app/routes"
 	"log"
 
@@ -13,6 +14,9 @@ func main() {
 
 	config.ConnectDB()
 
+	handlers.InitWebSocket()
+
+	routes.SetupWebSocketRoutes(app)
 	routes.SetupUserRoutes(app)
 
 	log.Println("Server running on http://localhost:3000")

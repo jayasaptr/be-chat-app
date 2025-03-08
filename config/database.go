@@ -42,3 +42,10 @@ func ConnectDB() {
 	DB = db
 	fmt.Println("Database Connected")
 }
+
+func GetDB() *gorm.DB {
+	if DB == nil {
+		log.Fatal("❌ Database belum diinisialisasi! Panggil utils.InitDB() di main.go")
+	}
+	return DB
+}

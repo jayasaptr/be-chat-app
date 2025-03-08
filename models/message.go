@@ -1,10 +1,11 @@
 package models
 
-import "gorm.io/gorm"
+import "time"
 
 type Message struct {
-	gorm.Model
-	SenderID   uint   `gorm:"not null"`
-	ReceiverID uint   `gorm:"not null"`
-	Content    string `gorm:"type:text;not null"`
+	ID         uint      `gorm:"primaryKey" json:"id"`
+	SenderID   string    `json:"sender_id"`
+	ReceiverID string    `json:"receiver_id"`
+	Content    string    `json:"content"`
+	CreatedAt  time.Time `json:"created_at"`
 }
