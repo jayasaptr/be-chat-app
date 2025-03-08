@@ -3,6 +3,7 @@ package services
 import (
 	"chat-app/models"
 	"chat-app/repositories"
+	"chat-app/utils"
 	"errors"
 
 	"golang.org/x/crypto/bcrypt"
@@ -20,15 +21,20 @@ func RegisterUser(username, email, password string) error {
 	return repositories.CreateUser(user)
 }
 
-func AuthenticateUser(email, password string) (*models.User, error) {
+func AuthenticateUser(email, password string) (string, error) {
 	user, err := repositories.GetUserByEmail(email)
 	if err != nil {
-		return nil, errors.New("user not found")
+		return "", errors.New("user not found")
 	}
 
 	if bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)) != nil {
-		return nil, errors.New("invalid password")
+		return "", errors.New("invalid password")
 	}
 
-	return user, nil
+	token, err := utils.GenerateToken(user.ID)
+	if err != nil {
+		return "", errors.New("failed to generate token")
+	}
+
+	return token, nil
 }
